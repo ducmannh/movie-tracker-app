@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using MovieTrackerBE.Data;
@@ -10,6 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Thêm Controllers
 builder.Services.AddControllers();
+
+// Cấu hình ForwardedHeaders khi chạy sau Reverse Proxy / Cloudflare
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
 
 // 2. Cấu hình Swagger / OpenAPI với hỗ trợ JWT Bearer Token
 builder.Services.AddEndpointsApiExplorer();
@@ -60,7 +69,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false; // Phù hợp cho môi trường local development
+    options.RequireHttpsMetadata = false; // Phù hợp cho môi trường Docker / Reverse Proxy
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -96,6 +105,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFE", policy =>
     {
         policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
+              .SetIsOriginAllowed(_ => true)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -103,6 +113,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Sử dụng ForwardedHeaders để nhận diện đúng IP và Scheme từ Cloudflare / Caddy
+app.UseForwardedHeaders();
 
 // Tự động kiểm tra và nâng cấp bảng Users (RefreshToken, RefreshTokenExpiryTime)
 using (var scope = app.Services.CreateScope())
@@ -130,7 +143,8 @@ if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("Ena
     });
 }
 
-app.UseHttpsRedirection();
+// Lưu ý: Không dùng UseHttpsRedirection() khi chạy trong Docker phía sau Cloudflare Tunnel
+// để tránh lỗi vòng lặp chuyển hướng (ERR_TOO_MANY_REDIRECTS)
 
 // Kích hoạt CORS trước Authentication
 app.UseCors("AllowFE");
