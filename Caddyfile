@@ -3,8 +3,9 @@
     admin off
 }
 
-# Domain được truyền vào từ biến môi trường DOMAIN trong file .env (Mặc định: localhost)
-{$DOMAIN:localhost} {
+# Lắng nghe trên cổng 80 (Hoạt động hoàn hảo với Cloudflare Tunnel)
+# Cloudflare sẽ tự động chịu trách nhiệm cấp SSL HTTPS ở phía ngoài
+:80 {
     # 1. Chuyển tiếp toàn bộ API về Backend .NET Web API
     handle /api/* {
         reverse_proxy backend:5032 {
