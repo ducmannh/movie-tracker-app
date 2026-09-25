@@ -1,0 +1,29 @@
+@MovieTrackerBE_HostAddress = http://localhost:5032
+
+### 1. Đăng ký tài khoản mới (Register)
+POST {{MovieTrackerBE_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "userdemo",
+  "email": "userdemo@example.com",
+  "password": "Password123!",
+  "fullName": "Nguyen Van A"
+}
+
+### 2. Đăng nhập (Login)
+# @name login
+POST {{MovieTrackerBE_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "userdemo",
+  "password": "Password123!"
+}
+
+### 3. Lấy thông tin tài khoản hiện tại (Me - Yêu cầu JWT Token)
+@authToken = {{login.response.body.data.token}}
+
+GET {{MovieTrackerBE_HostAddress}}/api/auth/me
+Authorization: Bearer {{authToken}}
+Accept: application/json
