@@ -1,10 +1,12 @@
 {
-    # Tắt thông báo telemetry không cần thiết
+    # Tắt quản lý admin API nội bộ
     admin off
+
+    # TẮT TOÀN BỘ TỰ ĐỘNG CHUYỂN HƯỚNG HTTPS (Khắc phục triệt để lỗi ERR_TOO_MANY_REDIRECTS khi dùng Cloudflare Tunnel)
+    auto_https off
 }
 
-# Lắng nghe trên cổng 80 (Hoạt động hoàn hảo với Cloudflare Tunnel)
-# Cloudflare sẽ tự động chịu trách nhiệm cấp SSL HTTPS ở phía ngoài
+# Lắng nghe duy nhất HTTP cổng 80, không redirect HTTPS
 :80 {
     # 1. Chuyển tiếp toàn bộ API về Backend .NET Web API
     handle /api/* {
@@ -12,7 +14,7 @@
             header_up Host {host}
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Proto https
         }
     }
 
