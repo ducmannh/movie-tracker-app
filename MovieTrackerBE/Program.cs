@@ -119,8 +119,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// 6. Kích hoạt Swagger UI trong môi trường Development
-if (app.Environment.IsDevelopment())
+// 6. Kích hoạt Swagger UI (hỗ trợ kiểm thử trực tiếp trên server qua /swagger)
+if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("EnableSwagger", true))
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>

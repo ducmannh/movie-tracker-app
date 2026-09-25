@@ -1,0 +1,67 @@
+services:
+  # ------------------------------------------------------------------
+  # 1. Backend Service (.NET Web API)
+  # ------------------------------------------------------------------
+  backend:
+    build:
+      context: ./MovieTrackerBE
+      dockerfile: Dockerfile
+    container_name: movietracker_backend
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING:-Server=100.86.236.104;Database=MovieTrackerDb;User Id=sa;Password=Ducmanh234@;TrustServerCertificate=True;}
+      - JwtSettings__Secret=${JWT_SECRET:-MovieTracker_Super_Secret_Jwt_Key_For_Authentication_2026_@!}
+      - JwtSettings__Issuer=${JWT_ISSUER:-MovieTrackerBE}
+      - JwtSettings__Audience=${JWT_AUDIENCE:-MovieTrackerFE}
+      - JwtSettings__AccessTokenExpirationInMinutes=${ACCESS_TOKEN_MINUTES:-15}
+      - JwtSettings__RefreshTokenExpirationInDays=${REFRESH_TOKEN_DAYS:-7}
+    networks:
+      - movietracker_net
+
+  # ------------------------------------------------------------------
+  # 2. Frontend Service (React + Vite + Nginx)
+  # ------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./MovieTrackerFE
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=/api
+    container_name: movietracker_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - movietracker_net
+
+  # ------------------------------------------------------------------
+  # 3. Gateway / Reverse Proxy & Auto SSL (Caddy Server)
+  #    Tự động cấp chứng chỉ SSL HTTPS miễn phí từ Let's Encrypt cho Domain
+  # ------------------------------------------------------------------
+  gateway:
+    image: caddy:2-alpine
+    container_name: movietracker_gateway
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - movietracker_net
+
+networks:
+  movietracker_net:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:

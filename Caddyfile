@@ -1,0 +1,33 @@
+{
+    # Tắt thông báo telemetry không cần thiết
+    admin off
+}
+
+# Domain được truyền vào từ biến môi trường DOMAIN trong file .env (Mặc định: localhost)
+{$DOMAIN:localhost} {
+    # 1. Chuyển tiếp toàn bộ API về Backend .NET Web API
+    handle /api/* {
+        reverse_proxy backend:5032 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # 2. (Tùy chọn) Cho phép xem Swagger UI nếu cần test trên server
+    handle /swagger/* {
+        reverse_proxy backend:5032
+    }
+
+    # 3. Chuyển tiếp toàn bộ giao diện web về Frontend React (Nginx)
+    handle {
+        reverse_proxy frontend:80
+    }
+
+    # Ghi log truy cập
+    log {
+        output stdout
+        format console
+    }
+}
