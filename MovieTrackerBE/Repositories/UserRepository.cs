@@ -13,23 +13,6 @@ public class UserRepository : IUserRepository
         _connectionFactory = connectionFactory;
     }
 
-    public async Task EnsureSchemaAsync()
-    {
-        using var connection = _connectionFactory.CreateConnection();
-        const string sql = """
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Users') AND name = 'RefreshToken')
-            BEGIN
-                ALTER TABLE Users ADD RefreshToken NVARCHAR(500) NULL;
-                ALTER TABLE Users ADD RefreshTokenExpiryTime DATETIME2 NULL;
-                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Users_RefreshToken')
-                BEGIN
-                    CREATE INDEX IX_Users_RefreshToken ON Users(RefreshToken);
-                END
-            END
-            """;
-        await connection.ExecuteAsync(sql);
-    }
-
     public async Task<User?> GetByIdAsync(Guid id)
     {
         using var connection = _connectionFactory.CreateConnection();

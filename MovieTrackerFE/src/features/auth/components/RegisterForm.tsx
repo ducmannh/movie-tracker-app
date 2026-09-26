@@ -217,7 +217,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
       <Button
         type="submit"
         disabled={registerMutation.isPending}
-        className="w-full h-11 sm:h-12 mt-3 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium text-sm sm:text-base shadow-lg shadow-violet-600/30 rounded-xl transition-all active:scale-[0.99] cursor-pointer hover:shadow-violet-600/40"
+        className="w-full h-11 sm:h-12 mt-3 bg-linear-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium text-sm sm:text-base shadow-lg shadow-violet-600/30 rounded-xl transition-all active:scale-[0.99] cursor-pointer hover:shadow-violet-600/40"
       >
         {registerMutation.isPending ? (
           <>

@@ -13,5 +13,4 @@ public interface IUserRepository
     Task<bool> ExistsByUsernameAsync(string username);
     Task<User?> GetByRefreshTokenAsync(string refreshToken);
     Task UpdateRefreshTokenAsync(Guid userId, string? refreshToken, DateTime? expiryTime);
-    Task EnsureSchemaAsync();
 }

@@ -52,8 +52,12 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // 3. Đăng ký Dependency Injection (Dapper Factory, Repositories, Services)
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -117,20 +121,6 @@ var app = builder.Build();
 // Sử dụng ForwardedHeaders để nhận diện đúng IP và Scheme từ Cloudflare / Caddy
 app.UseForwardedHeaders();
 
-// Tự động kiểm tra và nâng cấp bảng Users (RefreshToken, RefreshTokenExpiryTime)
-using (var scope = app.Services.CreateScope())
-{
-    try
-    {
-        var userRepo = scope.ServiceProvider.GetRequiredService<IUserRepository>();
-        await userRepo.EnsureSchemaAsync();
-        app.Logger.LogInformation("Đã kiểm tra cấu trúc bảng Users và RefreshToken thành công.");
-    }
-    catch (Exception ex)
-    {
-        app.Logger.LogWarning(ex, "Chưa thể kết nối CSDL để kiểm tra bảng Users: {Message}", ex.Message);
-    }
-}
 
 // 6. Kích hoạt Swagger UI (hỗ trợ kiểm thử trực tiếp trên server qua /swagger)
 if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("EnableSwagger", true))
@@ -148,6 +138,9 @@ if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("Ena
 
 // Kích hoạt CORS trước Authentication
 app.UseCors("AllowFE");
+
+// Kích hoạt phục vụ tệp tĩnh (ảnh poster được tải lên tại wwwroot/uploads)
+app.UseStaticFiles();
 
 // Kích hoạt Authentication & Authorization
 app.UseAuthentication();

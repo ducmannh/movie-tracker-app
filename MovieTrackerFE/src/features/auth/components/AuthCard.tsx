@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { LoginForm } from "./LoginForm"
 import { RegisterForm } from "./RegisterForm"
-import { Film } from "lucide-react"
+import { BrandLogo } from "@/components/common/BrandLogo"
 
 interface AuthCardProps {
   defaultTab?: "login" | "register"
@@ -15,16 +15,16 @@ export function AuthCard({ defaultTab = "login", onSuccess }: AuthCardProps) {
   return (
     <div className="relative w-full max-w-md mx-auto">
       {/* Hiệu ứng đèn ambient nhẹ nhàng phía sau */}
-      <div className="absolute -top-16 -left-12 w-64 h-64 bg-violet-600/20 rounded-full blur-3xl pointer-events-none -z-10" />
-      <div className="absolute -bottom-16 -right-12 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute -top-16 -left-12 w-72 h-72 bg-violet-600/25 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute -bottom-16 -right-12 w-72 h-72 bg-indigo-600/25 rounded-full blur-3xl pointer-events-none -z-10" />
 
       {/* Thẻ Form Đăng Nhập / Đăng Ký */}
-      <div className="relative p-6 sm:p-8 rounded-3xl bg-neutral-900/90 backdrop-blur-2xl border border-neutral-800 shadow-2xl shadow-black/60 text-neutral-100">
+      <div className="relative p-6 sm:p-8 rounded-3xl bg-neutral-900/75 backdrop-blur-2xl border border-neutral-800/90 shadow-2xl shadow-black/80 text-neutral-100">
         
         {/* Tiêu đề & Logo thương hiệu */}
         <div className="flex flex-col items-center text-center space-y-2 pb-5">
-          <div className="w-12 h-12 rounded-2xl bg-linear-to-tr from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-600/30">
-            <Film className="w-6 h-6 text-white" />
+          <div className="p-1 rounded-2xl bg-violet-600/10 border border-violet-500/20 shadow-xl shadow-violet-600/20">
+            <BrandLogo className="w-12 h-12" />
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
