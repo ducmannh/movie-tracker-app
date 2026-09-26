@@ -16,6 +16,8 @@ services:
       - JwtSettings__Audience=${JWT_AUDIENCE:-MovieTrackerFE}
       - JwtSettings__AccessTokenExpirationInMinutes=${ACCESS_TOKEN_MINUTES:-15}
       - JwtSettings__RefreshTokenExpirationInDays=${REFRESH_TOKEN_DAYS:-7}
+    volumes:
+      - uploads_data:/app/wwwroot/uploads
     networks:
       - movietracker_net
 
@@ -65,3 +67,4 @@ networks:
 volumes:
   caddy_data:
   caddy_config:
+  uploads_data:

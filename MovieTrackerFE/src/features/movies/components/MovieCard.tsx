@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import type { Movie, MovieStatus } from "../types"
 import { Star, CheckCircle2, Trash2, Calendar, Film, Loader2, Users, Globe, Tv, Clock, Play } from "lucide-react"
+import { getImageUrl } from "../utils/image"
 
 interface MovieCardProps {
   movie: Movie
@@ -49,7 +50,7 @@ export function MovieCard({
         <div className="relative shrink-0 w-24 sm:w-28 h-36 sm:h-40 rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800 shadow-md flex items-center justify-center">
           {movie.posterUrl ? (
             <img
-              src={movie.posterUrl}
+              src={getImageUrl(movie.posterUrl)}
               alt={movie.title}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               onError={(e) => {

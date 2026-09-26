@@ -1,6 +1,7 @@
 import { useState } from "react"
 import type { Movie, MovieStatus } from "../types"
 import { CheckCircle2, Trash2, Film, Edit2, Loader2, Tv, Clock, Star, Globe, Play } from "lucide-react"
+import { getImageUrl } from "../utils/image"
 
 interface MoviePosterCardProps {
   movie: Movie
@@ -50,7 +51,7 @@ export function MoviePosterCard({
       <div className="relative aspect-2/3 w-full overflow-hidden bg-neutral-950 flex items-center justify-center">
         {movie.posterUrl ? (
           <img
-            src={movie.posterUrl}
+            src={getImageUrl(movie.posterUrl)}
             alt={movie.title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             onError={(e) => {

@@ -32,6 +32,7 @@ import { LanguageCatalogModal } from "./LanguageCatalogModal"
 import { TrailerModal } from "./TrailerModal"
 import { isValidYouTubeUrl, extractYouTubeId } from "../utils/youtube"
 import { YouTubeIcon } from "./YouTubeIcon"
+import { getImageUrl } from "../utils/image"
 import type { Movie, CreateMovieRequest, UpdateMovieRequest, MovieStatus, MovieType } from "../types"
 
 interface MovieFormModalProps {
@@ -1536,7 +1537,7 @@ export function MovieFormModal({
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="relative w-14 h-20 rounded-lg overflow-hidden bg-neutral-900 border border-neutral-700 shrink-0">
                     <img
-                      src={previewUrl}
+                      src={getImageUrl(previewUrl)}
                       alt="Poster Preview"
                       className="w-full h-full object-cover"
                       onError={(e) => {

@@ -65,9 +65,9 @@ export const movieApi = {
         },
       }
     )
-    if (!res.data.success || !res.data.data?.url) {
+    if (!res.data.success || (!res.data.data?.url && !res.data.data?.relativeUrl)) {
       throw new Error(res.data.message || "Không thể tải ảnh lên.")
     }
-    return res.data.data.url
+    return res.data.data.relativeUrl || res.data.data.url
   },
 }

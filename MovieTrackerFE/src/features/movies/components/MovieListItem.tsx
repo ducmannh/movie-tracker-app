@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import type { Movie, MovieStatus } from "../types"
 import { Star, CheckCircle2, Trash2, Film, Loader2, Calendar, Users, Globe, Tv, Clock, Play } from "lucide-react"
+import { getImageUrl } from "../utils/image"
 
 interface MovieListItemProps {
   movie: Movie
@@ -48,7 +49,7 @@ export function MovieListItem({
         <div className="relative shrink-0 w-9 sm:w-11 h-12 sm:h-15 rounded-lg overflow-hidden bg-neutral-950 border border-neutral-800 flex items-center justify-center">
           {movie.posterUrl ? (
             <img
-              src={movie.posterUrl}
+              src={getImageUrl(movie.posterUrl)}
               alt={movie.title}
               className="w-full h-full object-cover"
               onError={(e) => {

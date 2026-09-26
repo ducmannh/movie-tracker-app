@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { Trash2, X, Loader2, Film } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { getImageUrl } from "../utils/image"
 
 export interface DeleteItemDetails {
   posterUrl?: string | null
@@ -100,7 +101,7 @@ export function ConfirmDeleteModal({
             <div className="relative shrink-0 w-11 h-15 rounded-lg overflow-hidden bg-neutral-900 border border-neutral-800 flex items-center justify-center">
               {itemDetails.posterUrl ? (
                 <img
-                  src={itemDetails.posterUrl}
+                  src={getImageUrl(itemDetails.posterUrl)}
                   alt={itemName || "Poster"}
                   className="w-full h-full object-cover"
                 />

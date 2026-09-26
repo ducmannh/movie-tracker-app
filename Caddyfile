@@ -18,7 +18,17 @@
         }
     }
 
-    # 2. (Tùy chọn) Cho phép xem Swagger UI nếu cần test trên server
+    # 2. Chuyển tiếp toàn bộ tệp tĩnh tải lên (ảnh poster) về Backend .NET
+    handle /uploads/* {
+        reverse_proxy backend:5032 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto https
+        }
+    }
+
+    # 3. (Tùy chọn) Cho phép xem Swagger UI nếu cần test trên server
     handle /swagger/* {
         reverse_proxy backend:5032
     }
