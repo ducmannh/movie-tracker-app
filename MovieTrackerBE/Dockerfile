@@ -27,5 +27,8 @@ EXPOSE 5032
 # Copy kết quả publish từ giai đoạn 1
 COPY --from=build /app/publish .
 
+# Đảm bảo thư mục lưu trữ ảnh poster luôn sẵn sàng
+RUN mkdir -p /app/wwwroot/uploads/posters
+
 # Chạy ứng dụng
 ENTRYPOINT ["dotnet", "MovieTrackerBE.dll"]

@@ -1,11 +1,11 @@
 /**
  * Tiện ích chuẩn hóa đường dẫn ảnh Poster của phim
- * Xử lý linh hoạt giữa môi trường Production (Domain/Server thật) và Localhost (Môi trường Dev)
+ * Xử lý linh hoạt và đồng bộ giữa môi trường Production (Server) và Localhost (Dev)
  */
 
 export function getImageUrl(url?: string | null): string {
   if (!url) return ""
-  const trimmed = url.trim()
+  let trimmed = url.trim()
   if (!trimmed) return ""
 
   // 1. Nếu là blob URL hoặc base64 (preview trước khi lưu)
@@ -17,27 +17,28 @@ export function getImageUrl(url?: string | null): string {
   if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
     try {
       const parsed = new URL(trimmed)
-      // Nếu là link localhost (do lưu từ môi trường dev hoặc Kestrel tự sinh)
+      // Nếu là link localhost cũ lưu trong DB từ máy dev
       if (parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1") {
-        // Nếu trang web đang chạy trên server thật (domain khác localhost)
-        if (
-          typeof window !== "undefined" &&
-          window.location.hostname !== "localhost" &&
-          window.location.hostname !== "127.0.0.1"
-        ) {
-          // Chuyển link localhost thành đường dẫn tương đối để load qua domain hiện tại
-          return parsed.pathname
-        }
+        trimmed = parsed.pathname
+      } else {
+        // Link ảnh ngoài hợp lệ (TMDB, IMDb, Amazon...)
+        return trimmed
       }
     } catch {
-      // Nếu không parse được thì giữ nguyên link gốc
+      return trimmed
     }
-    return trimmed
   }
 
-  // 3. Nếu là đường dẫn tương đối (ví dụ: /uploads/posters/...)
+  // 3. Nếu là đường dẫn /uploads/posters/{fileName}, chuyển hướng qua API endpoint /api/upload/posters/{fileName}
+  // Tuyến đường /api/* luôn được reverse proxy Caddy chuyển tiếp đến Backend .NET 100% không bị Nginx chặn
+  if (trimmed.startsWith("/uploads/posters/")) {
+    const fileName = trimmed.replace("/uploads/posters/", "")
+    trimmed = `/api/upload/posters/${fileName}`
+  }
+
+  // 4. Nếu là đường dẫn tương đối (bắt đầu bằng "/")
   if (trimmed.startsWith("/")) {
-    // Nếu đang chạy local dev (cổng 5173 của Vite) và Backend chạy riêng ở cổng 5032
+    // Nếu đang chạy local dev (cổng 5173/3000 của Vite) và Backend chạy riêng ở cổng 5032
     if (
       typeof window !== "undefined" &&
       (window.location.port === "5173" || window.location.port === "3000")

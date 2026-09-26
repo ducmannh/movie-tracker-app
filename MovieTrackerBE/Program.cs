@@ -139,8 +139,23 @@ if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("Ena
 // Kích hoạt CORS trước Authentication
 app.UseCors("AllowFE");
 
+// Đảm bảo thư mục wwwroot/uploads/posters luôn tồn tại trước khi cấu hình static files
+var contentRoot = app.Environment.ContentRootPath;
+var uploadsFolder = Path.Combine(contentRoot, "wwwroot", "uploads");
+var postersFolder = Path.Combine(uploadsFolder, "posters");
+if (!Directory.Exists(postersFolder))
+{
+    Directory.CreateDirectory(postersFolder);
+}
+
 // Kích hoạt phục vụ tệp tĩnh (ảnh poster được tải lên tại wwwroot/uploads)
 app.UseStaticFiles();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsFolder),
+    RequestPath = "/uploads"
+});
 
 // Kích hoạt Authentication & Authorization
 app.UseAuthentication();

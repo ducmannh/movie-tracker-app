@@ -105,6 +105,43 @@ public class UploadController : ControllerBase
                 ApiResponse<UploadResultDto>.FailureResult("Lỗi hệ thống khi lưu ảnh: " + ex.Message));
         }
     }
+
+    /// <summary>
+    /// Lấy ảnh poster đã tải lên (hoạt động trực tiếp qua route API /api/upload/posters/{fileName})
+    /// Không yêu cầu đăng nhập để các thẻ img trên web/mobile hiển thị trực tiếp được.
+    /// </summary>
+    [HttpGet("posters/{fileName}")]
+    [AllowAnonymous]
+    public IActionResult GetPoster(string fileName)
+    {
+        var cleanFileName = Path.GetFileName(fileName);
+        var webRoot = _environment.WebRootPath;
+        if (string.IsNullOrWhiteSpace(webRoot))
+        {
+            webRoot = Path.Combine(_environment.ContentRootPath, "wwwroot");
+        }
+
+        var filePath = Path.Combine(webRoot, "uploads", "posters", cleanFileName);
+        if (!System.IO.File.Exists(filePath))
+        {
+            return NotFound(new { message = "Không tìm thấy tệp ảnh poster trên máy chủ." });
+        }
+
+        var ext = Path.GetExtension(cleanFileName).ToLowerInvariant();
+        var contentType = ext switch
+        {
+            ".png" => "image/png",
+            ".webp" => "image/webp",
+            ".gif" => "image/gif",
+            ".avif" => "image/avif",
+            _ => "image/jpeg"
+        };
+
+        // Cache 30 ngày ở trình duyệt
+        Response.Headers.Append("Cache-Control", "public, max-age=2592000");
+
+        return PhysicalFile(filePath, contentType);
+    }
 }
 
 public class UploadResultDto
