@@ -97,6 +97,7 @@ export function MovieFormModal({
   initialData,
 }: MovieFormModalProps) {
   const [title, setTitle] = useState("")
+  const [englishTitle, setEnglishTitle] = useState("")
   const [movieType, setMovieType] = useState<MovieType>("Movie")
   const [durationMinutes, setDurationMinutes] = useState<string>("")
   const [season, setSeason] = useState<string>("")
@@ -263,19 +264,11 @@ export function MovieFormModal({
     }
   }, [])
 
-  // Đóng modal khi nhấn phím Escape
-  useEffect(() => {
-    if (!isOpen) return
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose()
-    }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [isOpen, onClose])
 
   useEffect(() => {
     if (initialData) {
       setTitle(initialData.title)
+      setEnglishTitle(initialData.englishTitle ?? "")
       setMovieType(initialData.movieType || "Movie")
       setDurationMinutes(initialData.durationMinutes ? String(initialData.durationMinutes) : "")
       setSeason(initialData.season ? String(initialData.season) : "")
@@ -291,6 +284,7 @@ export function MovieFormModal({
       setTrailerUrl(initialData.trailerUrl ?? "")
     } else {
       setTitle("")
+      setEnglishTitle("")
       setMovieType("Movie")
       setDurationMinutes("")
       setSeason("")
@@ -602,6 +596,7 @@ export function MovieFormModal({
 
       await onSubmit({
         title: title.trim(),
+        englishTitle: englishTitle.trim() || undefined,
         movieType: movieType,
         durationMinutes: isNaN(durNum as number) ? undefined : durNum,
         season: isNaN(seasonNum as number) ? undefined : seasonNum,
@@ -627,9 +622,6 @@ export function MovieFormModal({
 
   return (
     <div
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose()
-      }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in-50 duration-200"
     >
       <div className="relative w-full max-w-lg bg-neutral-900/95 backdrop-blur-2xl border border-neutral-800/90 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -665,7 +657,7 @@ export function MovieFormModal({
             </div>
           )}
 
-          {/* Tên phim */}
+          {/* Tên phim (Tiếng Việt / Gốc) */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between h-5">
               <Label htmlFor="title" className="text-xs font-semibold text-neutral-200">
@@ -679,6 +671,24 @@ export function MovieFormModal({
               onChange={(e) => setTitle(e.target.value)}
               className="h-9 bg-neutral-950 border-neutral-800 text-white text-sm focus-visible:ring-violet-500"
               required
+            />
+          </div>
+
+          {/* Tên phim Tiếng Anh */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between h-5">
+              <Label htmlFor="english-title" className="text-xs font-semibold text-neutral-200 flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-sky-400" />
+                Tên phim tiếng Anh
+              </Label>
+              <span className="text-[10px] text-neutral-500 font-normal">Tùy chọn</span>
+            </div>
+            <Input
+              id="english-title"
+              placeholder="Nhập tên phim Tiếng Anh"
+              value={englishTitle}
+              onChange={(e) => setEnglishTitle(e.target.value)}
+              className="h-9 bg-neutral-950 border-neutral-800 text-white text-sm focus-visible:ring-sky-500"
             />
           </div>
 

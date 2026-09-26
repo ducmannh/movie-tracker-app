@@ -7,6 +7,8 @@ public class CreateMovieRequestDto
     [Required(ErrorMessage = "Tên phim không được để trống.")]
     public string Title { get; set; } = string.Empty;
 
+    public string? EnglishTitle { get; set; }
+
     [RegularExpression("^(Movie|Series)$", ErrorMessage = "Loại phim chỉ có thể là 'Movie' hoặc 'Series'.")]
     public string MovieType { get; set; } = "Movie";
 

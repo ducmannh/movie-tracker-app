@@ -90,12 +90,22 @@ export function MovieCard({
           <div className="space-y-1.5">
             {/* Tiêu đề & Nút Xóa góc trên bên phải */}
             <div className="flex items-start justify-between gap-2">
-              <h3
-                title={movie.title}
-                className="text-base font-bold text-white line-clamp-1 group-hover:text-violet-300 transition-colors flex-1"
-              >
-                {movie.title}
-              </h3>
+              <div className="flex-1 min-w-0">
+                <h3
+                  title={movie.title}
+                  className="text-base font-bold text-white line-clamp-1 group-hover:text-violet-300 transition-colors"
+                >
+                  {movie.title}
+                </h3>
+                {movie.englishTitle && (
+                  <p
+                    title={movie.englishTitle}
+                    className="text-xs text-neutral-400 font-medium truncate italic"
+                  >
+                    {movie.englishTitle}
+                  </p>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={handleDelete}

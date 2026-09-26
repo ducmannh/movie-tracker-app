@@ -75,6 +75,7 @@ BEGIN
         Id INT IDENTITY(1,1) PRIMARY KEY,
         UserId UNIQUEIDENTIFIER NOT NULL,
         Title NVARCHAR(MAX) NOT NULL,
+        EnglishTitle NVARCHAR(MAX) NULL,                -- Tên phim bằng Tiếng Anh
         MovieType NVARCHAR(50) NOT NULL DEFAULT 'Movie', -- 'Movie' (Phim lẻ) | 'Series' (Phim bộ)
         DurationMinutes INT NULL,                       -- Thời lượng phim lẻ (phút)
         Season INT NULL,                                -- Mùa phim (Series)
@@ -181,6 +182,13 @@ BEGIN
     BEGIN
         ALTER TABLE Movies ADD TrailerUrl NVARCHAR(MAX) NULL;
         PRINT N'Đã bổ sung cột TrailerUrl vào bảng Movies.';
+    END
+
+    -- 7. Bổ sung cột EnglishTitle (Tên phim bằng tiếng Anh)
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Movies') AND name = 'EnglishTitle')
+    BEGIN
+        ALTER TABLE Movies ADD EnglishTitle NVARCHAR(MAX) NULL;
+        PRINT N'Đã bổ sung cột EnglishTitle vào bảng Movies.';
     END
 
     PRINT N'Toàn bộ trường trong bảng Movies đã được đồng bộ thành công.';

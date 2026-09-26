@@ -5,6 +5,7 @@ export interface Movie {
   id: number
   movieId?: number
   title: string
+  englishTitle?: string
   movieType?: MovieType
   durationMinutes?: number
   season?: number
@@ -25,6 +26,7 @@ export interface Movie {
 
 export interface CreateMovieRequest {
   title: string
+  englishTitle?: string
   movieType?: MovieType
   durationMinutes?: number
   season?: number
@@ -42,6 +44,7 @@ export interface CreateMovieRequest {
 
 export interface UpdateMovieRequest {
   title: string
+  englishTitle?: string
   movieType?: MovieType
   durationMinutes?: number
   season?: number

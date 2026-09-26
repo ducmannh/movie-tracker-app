@@ -64,12 +64,22 @@ export function MovieListItem({
         {/* Tiêu đề & Thông số */}
         <div className="min-w-0 flex-1 space-y-0.5">
           <div className="flex items-center gap-2">
-            <h4
-              title={movie.title}
-              className="text-xs sm:text-sm font-bold text-neutral-100 truncate group-hover:text-violet-300 transition-colors"
-            >
-              {movie.title}
-            </h4>
+            <div className="flex items-baseline gap-1.5 min-w-0 truncate">
+              <h4
+                title={movie.title}
+                className="text-xs sm:text-sm font-bold text-neutral-100 truncate group-hover:text-violet-300 transition-colors shrink-0"
+              >
+                {movie.title}
+              </h4>
+              {movie.englishTitle && (
+                <span
+                  title={movie.englishTitle}
+                  className="text-[11px] text-neutral-400 font-normal italic truncate"
+                >
+                  ({movie.englishTitle})
+                </span>
+              )}
+            </div>
             {movie.releaseYear && (
               <span className="text-[11px] text-neutral-400 flex items-center gap-0.5 shrink-0">
                 <Calendar className="w-3 h-3" />

@@ -20,6 +20,7 @@ public class MovieRepository : IMovieRepository
             SELECT 
                 Id,
                 Title,
+                EnglishTitle,
                 MovieType,
                 DurationMinutes,
                 Season,
@@ -39,7 +40,7 @@ public class MovieRepository : IMovieRepository
             FROM Movies
             WHERE UserId = @UserId
               AND (@Status IS NULL OR Status = @Status)
-              AND (@Search IS NULL OR Title LIKE @SearchPattern OR Genre LIKE @SearchPattern OR Language LIKE @SearchPattern OR Actors LIKE @SearchPattern OR MovieType LIKE @SearchPattern)
+              AND (@Search IS NULL OR Title LIKE @SearchPattern OR EnglishTitle LIKE @SearchPattern OR Genre LIKE @SearchPattern OR Language LIKE @SearchPattern OR Actors LIKE @SearchPattern OR MovieType LIKE @SearchPattern)
             ORDER BY UpdatedAt DESC;
             """;
 
@@ -64,6 +65,7 @@ public class MovieRepository : IMovieRepository
             SELECT 
                 Id,
                 Title,
+                EnglishTitle,
                 MovieType,
                 DurationMinutes,
                 Season,
@@ -92,10 +94,11 @@ public class MovieRepository : IMovieRepository
         using var connection = _connectionFactory.CreateConnection();
 
         const string sql = """
-            INSERT INTO Movies (UserId, Title, MovieType, DurationMinutes, Season, EpisodeCount, ReleaseYear, Genre, Language, Actors, PosterUrl, TrailerUrl, Overview, Status, Rating, WatchedAt, CreatedAt, UpdatedAt)
+            INSERT INTO Movies (UserId, Title, EnglishTitle, MovieType, DurationMinutes, Season, EpisodeCount, ReleaseYear, Genre, Language, Actors, PosterUrl, TrailerUrl, Overview, Status, Rating, WatchedAt, CreatedAt, UpdatedAt)
             VALUES (
                 @UserId, 
                 @Title, 
+                @EnglishTitle,
                 @MovieType,
                 @DurationMinutes,
                 @Season,
@@ -121,6 +124,7 @@ public class MovieRepository : IMovieRepository
         {
             UserId = userId,
             request.Title,
+            request.EnglishTitle,
             MovieType = string.IsNullOrWhiteSpace(request.MovieType) ? "Movie" : request.MovieType,
             request.DurationMinutes,
             request.Season,
@@ -147,6 +151,7 @@ public class MovieRepository : IMovieRepository
         const string sql = """
             UPDATE Movies
             SET Title = @Title,
+                EnglishTitle = @EnglishTitle,
                 MovieType = @MovieType,
                 DurationMinutes = @DurationMinutes,
                 Season = @Season,
@@ -175,6 +180,7 @@ public class MovieRepository : IMovieRepository
             Id = id,
             UserId = userId,
             request.Title,
+            request.EnglishTitle,
             MovieType = string.IsNullOrWhiteSpace(request.MovieType) ? "Movie" : request.MovieType,
             request.DurationMinutes,
             request.Season,

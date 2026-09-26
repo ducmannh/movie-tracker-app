@@ -162,12 +162,22 @@ export function MoviePosterCard({
 
       {/* Thông tin vắn tắt dưới poster */}
       <div className="p-2.5 space-y-1.5">
-        <h4
-          title={movie.title}
-          className="text-xs sm:text-sm font-bold text-neutral-100 line-clamp-1 group-hover:text-violet-300 transition-colors"
-        >
-          {movie.title}
-        </h4>
+        <div className="space-y-0.5">
+          <h4
+            title={movie.title}
+            className="text-xs sm:text-sm font-bold text-neutral-100 line-clamp-1 group-hover:text-violet-300 transition-colors"
+          >
+            {movie.title}
+          </h4>
+          {movie.englishTitle && (
+            <p
+              title={movie.englishTitle}
+              className="text-[11px] text-neutral-400 font-medium truncate italic"
+            >
+              {movie.englishTitle}
+            </p>
+          )}
+        </div>
 
         {/* Hàng 2: Năm, Thời lượng/Số tập & Ngôn ngữ */}
         <div className="flex items-center justify-between text-[11px] gap-2">

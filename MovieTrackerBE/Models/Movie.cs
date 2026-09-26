@@ -5,6 +5,7 @@ public class Movie
     public int Id { get; set; }
     public Guid UserId { get; set; }
     public string Title { get; set; } = string.Empty;
+    public string? EnglishTitle { get; set; }
     public string MovieType { get; set; } = "Movie"; // "Movie" | "Series"
     public int? DurationMinutes { get; set; }
     public int? Season { get; set; }
